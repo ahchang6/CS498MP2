@@ -1,0 +1,9 @@
+        /*let filteredPokemon = this.props.items;
+         the first time it won't have any items
+        if(filteredPokemon === undefined){
+            filteredPokemon = [];
+        }
+        else if(filteredPokemon.length > 15) {
+            filteredPokemon = filteredPokemon.slice(0, 15);
+        }
+        console.log(filteredPokemon);*/
