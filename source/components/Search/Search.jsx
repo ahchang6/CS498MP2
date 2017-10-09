@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import List from '../List/List.jsx'
+import ListTwo from '../List/List.jsx'
 import { Dropdown } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 import styles from './Search.scss'
 
@@ -40,12 +43,7 @@ class Search extends Component {
         console.log("starting");
         axios.get("https://pokeapi.co/api/v2/pokemon/?limit=900")
             .then(function(response){
-                //this.allPokemon = response.data;
-
                 this.allPokemonArray = response.data.results;
-                /*
-                this.currentList = this.allPokemonArray;
-                */
                 // parsing to tuple
                 for(let i = 0; i<this.allPokemonArray.length; i++){
                     let curPoke = [parseInt(this.allPokemonArray[i]["url"].slice(34,-1)), this.allPokemonArray[i]["name"]];
@@ -57,9 +55,10 @@ class Search extends Component {
             }.bind(this));
 
     }
-    // sets everything up
+    // sets everything up before laoding
     componentDidMount(){
-      // this.getAllPokemon();
+      //this.getAllPokemon();
+        console.log("Search Mounted");
     }
   render() {
       const options = [
@@ -67,18 +66,24 @@ class Search extends Component {
           { value: 1, text: 'Pokemon Name' },
       ];
       return (
-          <div>
-          <form>
-              <input
-                  type="text"
-                  placeholder="Search Pokemon,,,"
-
-                  //value={this.props.filterText}
-
-                  ref="filterTextInput"
-                  onChange={this.filterPokemon}
-              />
-          </form>
+          <div className="Search">
+              <div className="redirect">
+              <Button>
+                  <Link to="/search">Search</Link>
+              </Button>
+              <Button>
+                  <Link to="/gallery">Gallery</Link>
+              </Button>
+              </div>
+              <Form>
+                  <Form.Field>
+                      <label>Pokemon Search</label>
+                      <input
+                          placeholder="Start Typing a Pokemon..."
+                      onChange={this.filterPokemon}
+                      />
+                  </Form.Field>
+              </Form>
           <Dropdown
          placeholder="Sorting"
          selection
@@ -86,7 +91,8 @@ class Search extends Component {
          options={options}
          onChange={this.changeSorting}
           />
-          <List items={this.currentListShown} />
+          <ListTwo items={this.currentListShown} />
+
           </div>
       )
   }
@@ -123,9 +129,9 @@ class Search extends Component {
                 if (a[1] > b[1]) return 1;
                 return 0;
             });
-            console.log(this.pokemonPreped);
         }
         let currentPokemonList = this.currentList.slice(0, 15);
+        console.log(this.currentList);
         this.currentListShown = [];
         for (let i = 0; i < currentPokemonList.length; i++) {
             this.currentListShown.push(currentPokemonList[i][0].toString() + " " + currentPokemonList[i][1]);
@@ -142,7 +148,6 @@ class Search extends Component {
   filterPokemon(event) {
       //search in form
       let currentSearch = event.target.value;
-      //TODO implement backspace
 
       if (currentSearch.length < this.searchWord.length) {
           this.currentList = this.pokemonPreped;
@@ -151,6 +156,7 @@ class Search extends Component {
 
       for (let i = 0; i < this.currentList.length; i++) {
           if (currentSearch.length === 0) {
+              this.currentHelper = this.pokemonPreped;
               break
           }
           let curPoke = this.currentList[i][1];
@@ -160,11 +166,12 @@ class Search extends Component {
       }
       this.currentList = this.currentHelper;
       // stores the dictionaries
-      let currentPokemonList = this.currentList.slice(0, 15);
+      // we only want 8
+      let currentPokemonList = this.currentList.slice(0, 8);
       this.currentListShown = [];
       console.log(currentPokemonList);
       for (let i = 0; i < currentPokemonList.length; i++) {
-          this.currentListShown.push(currentPokemonList[i][0].toString() + " " + currentPokemonList[i][1]);
+          this.currentListShown.push(currentPokemonList[i]);
       }
 
 
