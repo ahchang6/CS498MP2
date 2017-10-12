@@ -25,9 +25,6 @@ class Home extends Component {
             <Button>
             <Link to="/gallery">Gallery</Link>
             </Button>
-            <Button>
-                <Link to="/pokemon/23">Debug</Link>
-            </Button>
         </div>)
     }
 }
