@@ -14,7 +14,7 @@ class Gallery extends Component {
         // will be a dictionary of type names with a dict of pokemon in it
         this.types = {
         };
-        this.finishedAmountOfTypes = 3;
+        this.finishedAmountOfTypes = 18;
         this.wantedTypes = [];
         this.processedPokemonArray = [1,2,3,4,5,6,7,8,9,10,11,12];
         this.rendered = 0;
