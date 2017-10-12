@@ -38,8 +38,10 @@ class ListTwo extends Component{
             <List selection verticalAlign='middle'>
                 {
                     this.props.items.map(function(item) {
+                        let linkTo = "/pokemon/" + item[0];
                         console.log(item);
                         return (
+                            <Link to={linkTo}>
                             <List.Item>
                                 <Image avatar src={this.getPokemonSprite(item[0])}
                                 style={{width: 50, height: 50}}
@@ -49,6 +51,7 @@ class ListTwo extends Component{
                                     <List.Header>{item[0] + " " + item[1]}</List.Header>
                                 </List.Content>
                             </List.Item>
+                            </Link>
 
                         )
                     }.bind(this))

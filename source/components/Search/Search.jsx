@@ -3,7 +3,7 @@ import axios from 'axios'
 import ListTwo from '../List/List.jsx'
 import { Dropdown } from 'semantic-ui-react'
 import { Form } from 'semantic-ui-react'
-import { Button } from 'semantic-ui-react'
+import { Button, Dimmer, Loader} from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 import styles from './Search.scss'
@@ -27,6 +27,8 @@ class Search extends Component {
         this.currentHelper = [];
         this.allPokemonArray = [];
         this.pokemonPreped = [];
+        // for the loading moduel
+        this.loading = true;
         // will be pokemon sorted alphabetically
 
         this.sortMethod= 0;
@@ -52,47 +54,65 @@ class Search extends Component {
                 this.currentList = this.pokemonPreped;
                 console.log(this.pokemonPreped);
                 console.log("ready");
+                this.loading=false;
+
+                //intital showing
+                let currentPokemonList = this.currentList.slice(0, 15);
+                console.log(this.currentList);
+                this.currentListShown = [];
+                for (let i = 0; i < currentPokemonList.length; i++) {
+                    this.currentListShown.push(currentPokemonList[i]);
+                }
+
+
+
+                this.forceUpdate();
+
             }.bind(this));
 
     }
     // sets everything up before laoding
     componentDidMount(){
-      //this.getAllPokemon();
+        this.getAllPokemon();
         console.log("Search Mounted");
     }
   render() {
       const options = [
-          { value: 0, text: 'Pokedex Number' },
-          { value: 1, text: 'Pokemon Name' },
+          { value: 0, text: 'Pokedex Number (ascending)' },
+          { value: 1, text: 'Pokedex Number (descending)' },
+          { value: 2, text: 'Pokedex Name (ascending)' },
+          { value: 3, text: 'Pokemon Name (descending)' },
       ];
       return (
           <div className="Search">
               <div className="redirect">
-              <Button>
-                  <Link to="/search">Search</Link>
-              </Button>
-              <Button>
-                  <Link to="/gallery">Gallery</Link>
-              </Button>
+                  <Button>
+                      <Link to="/search">Search</Link>
+                  </Button>
+                  <Button>
+                      <Link to="/gallery">Gallery</Link>
+                  </Button>
               </div>
+              <Dimmer active={this.loading}>
+                  <Loader>Loading Pokedex</Loader>
+              </Dimmer>
               <Form>
                   <Form.Field>
                       <label>Pokemon Search</label>
                       <input
                           placeholder="Start Typing a Pokemon..."
-                      onChange={this.filterPokemon}
+                          onChange={this.filterPokemon}
                       />
                   </Form.Field>
               </Form>
-          <Dropdown
-         placeholder="Sorting"
-         selection
-         search
-         options={options}
-         onChange={this.changeSorting}
-          />
-          <ListTwo items={this.currentListShown} />
-
+              <Dropdown
+                  placeholder="Sorting"
+                  selection
+                  search
+                  options={options}
+                  onChange={this.changeSorting}
+              />
+              <ListTwo items={this.currentListShown} />
           </div>
       )
   }
@@ -117,8 +137,21 @@ class Search extends Component {
                 return 0;
             });
         }
+        // numerical descending
+        else if(newSort === 1){
+            this.currentList = this.currentList.sort( function(a, b){
+                if(a[0] < b[0]) return 1;
+                if(a[0] > b[0]) return -1;
+                return 0;
+            });
+            this.pokemonPreped = this.pokemonPreped.sort( function(a, b){
+                if(a[0] < b[0]) return 1;
+                if(a[0] > b[0]) return -1;
+                return 0;
+            });
+        }
         // alphabetical
-        else if(newSort === 1) {
+        else if(newSort === 2) {
             this.currentList = this.currentList.sort(function (a, b) {
                 if (a[1] < b[1]) return -1;
                 if (a[1] > b[1]) return 1;
@@ -130,11 +163,24 @@ class Search extends Component {
                 return 0;
             });
         }
+        // alphabetical descending
+        else if(newSort === 3) {
+            this.currentList = this.currentList.sort(function (a, b) {
+                if (a[1] < b[1]) return 1;
+                if (a[1] > b[1]) return -1;
+                return 0;
+            });
+            this.pokemonPreped = this.pokemonPreped.sort(function (a, b) {
+                if (a[1] < b[1]) return 1;
+                if (a[1] > b[1]) return -1;
+                return 0;
+            });
+        }
         let currentPokemonList = this.currentList.slice(0, 15);
         console.log(this.currentList);
         this.currentListShown = [];
         for (let i = 0; i < currentPokemonList.length; i++) {
-            this.currentListShown.push(currentPokemonList[i][0].toString() + " " + currentPokemonList[i][1]);
+            this.currentListShown.push(currentPokemonList[i]);
         }
 
 

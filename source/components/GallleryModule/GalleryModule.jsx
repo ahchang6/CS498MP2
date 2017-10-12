@@ -19,8 +19,10 @@ class GalleryModule extends Component {
                 {
                     this.props.items.map(function(item) {
                         console.log(item);
+                        let route = "/pokemon/" + item;
                         return (
                             <Grid.Column>
+                                <Link to={route}>
                             <Card>
                                 <Image avatar src={this.getPokemonSprite(item)}
                                        style={{width: 300, height: 300}}
@@ -28,6 +30,7 @@ class GalleryModule extends Component {
 
                                 <Card.Header>{item}</Card.Header>
                             </Card>
+                                </Link>
                             </Grid.Column>
 
                         )

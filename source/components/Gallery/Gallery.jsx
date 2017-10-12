@@ -3,9 +3,10 @@ import { Button } from 'semantic-ui-react'
 import { Checkbox } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Grid } from 'semantic-ui-react'
+import { Dimmer, Loader } from 'semantic-ui-react'
 import GalleryModule from '../GallleryModule/GalleryModule.jsx'
-import axios from 'axios'
 import styles from './Gallery.scss'
+import axios from 'axios'
 
 class Gallery extends Component {
     constructor(prop){
@@ -13,17 +14,17 @@ class Gallery extends Component {
         // will be a dictionary of type names with a dict of pokemon in it
         this.types = {
         };
-        this.pokemons = {}
-        this.finishedAmountOfTypes = 10;
+        this.finishedAmountOfTypes = 3;
         this.wantedTypes = [];
         this.processedPokemonArray = [1,2,3,4,5,6,7,8,9,10,11,12];
         this.rendered = 0;
+
+        this.loading = true;
         this.getAllTypes = this.getAllTypes.bind(this);
         this.filterTypes = this.filterTypes.bind(this);
     }
     getAllTypes(){
 
-        console.log("starting gallery");
         for(let i = 1; i <= this.finishedAmountOfTypes; i++) {
             axios.get("https://pokeapi.co/api/v2/type/" + i)
                 .then(function (response) {
@@ -42,18 +43,17 @@ class Gallery extends Component {
                     }
                     this.types[typeName] = typeDict;
                     this.rendered += 1;
+                    //when all have been rendered
                     if(this.rendered === this.finishedAmountOfTypes){
-                        this.compileTypes();
+                        console.log("starting gallery");
+                        this.loading = false;
+                        this.forceUpdate();
 
                     }
                     this.forceUpdate();
 
                 }.bind(this));
         }
-
-    }
-    compileTypes(){
-
 
     }
     componentDidMount(){
@@ -66,6 +66,7 @@ class Gallery extends Component {
         console.log(typesKeys);
         return(
             <div className="Gallery">
+                <Dimmer active={this.loading} page={true}><Loader>Loading Pokedex. This may take a few seconds</Loader></Dimmer>
                 <div className="redirect">
                     <Button>
                         <Link to="/search">Search</Link>
